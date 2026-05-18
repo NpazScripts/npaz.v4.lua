@@ -7,149 +7,7 @@ local ContentProvider = game:GetService("ContentProvider")
 local Workspace = game:GetService("Workspace")
 local LP = Players.LocalPlayer
  
---// NPaz LHub Key System (Redesign)
- 
-local CoreGui = game:GetService("CoreGui")
- 
-_G.NpazKeyPassed = false
-local CorrectKey = "%KeyNpaz%"
- 
-local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name = "NpazKeySystem"
-KeyGui.Parent = CoreGui
-KeyGui.ResetOnSpawn = false
- 
-local KMain = Instance.new("Frame")
-KMain.Parent = KeyGui
-KMain.Size = UDim2.new(0, 400, 0, 220)
-KMain.Position = UDim2.new(0.5, -200, 0.5, -110)
-KMain.BackgroundColor3 = Color3.fromRGB(7, 6, 15)
-KMain.BorderSizePixel = 0
-Instance.new("UICorner", KMain).CornerRadius = UDim.new(0, 14)
-local KStroke = Instance.new("UIStroke", KMain)
-KStroke.Color = Color3.fromRGB(124, 58, 237)
-KStroke.Thickness = 1.5
- 
-local KTopLine = Instance.new("Frame", KMain)
-KTopLine.Size = UDim2.new(0.6, 0, 0, 1)
-KTopLine.Position = UDim2.new(0.2, 0, 0, 0)
-KTopLine.BackgroundColor3 = Color3.fromRGB(167, 139, 250)
-KTopLine.BackgroundTransparency = 0.3
-KTopLine.BorderSizePixel = 0
- 
-local KGem = Instance.new("Frame", KMain)
-KGem.Size = UDim2.new(0, 32, 0, 32)
-KGem.Position = UDim2.new(0.5, -16, 0, 18)
-KGem.BackgroundColor3 = Color3.fromRGB(124, 58, 237)
-KGem.BorderSizePixel = 0
-Instance.new("UICorner", KGem).CornerRadius = UDim.new(0, 8)
-local KGemStroke = Instance.new("UIStroke", KGem)
-KGemStroke.Color = Color3.fromRGB(167, 139, 250)
-KGemStroke.Thickness = 1
-local KGemLbl = Instance.new("TextLabel", KGem)
-KGemLbl.Size = UDim2.new(1, 0, 1, 0)
-KGemLbl.BackgroundTransparency = 1
-KGemLbl.Text = "N"
-KGemLbl.TextColor3 = Color3.fromRGB(237, 233, 254)
-KGemLbl.Font = Enum.Font.GothamBlack
-KGemLbl.TextSize = 17
- 
-local KTitle = Instance.new("TextLabel", KMain)
-KTitle.Size = UDim2.new(1, 0, 0, 22)
-KTitle.Position = UDim2.new(0, 0, 0, 58)
-KTitle.BackgroundTransparency = 1
-KTitle.Text = "Npaz LHub"
-KTitle.TextColor3 = Color3.fromRGB(221, 214, 254)
-KTitle.Font = Enum.Font.GothamBlack
-KTitle.TextSize = 16
-KTitle.TextXAlignment = Enum.TextXAlignment.Center
- 
-local KSub = Instance.new("TextLabel", KMain)
-KSub.Size = UDim2.new(1, 0, 0, 16)
-KSub.Position = UDim2.new(0, 0, 0, 82)
-KSub.BackgroundTransparency = 1
-KSub.Text = "INSIRA SUA CHAVE DE ACESSO"
-KSub.TextColor3 = Color3.fromRGB(109, 40, 217)
-KSub.Font = Enum.Font.GothamBold
-KSub.TextSize = 9
-KSub.TextXAlignment = Enum.TextXAlignment.Center
- 
-local KBox = Instance.new("TextBox", KMain)
-KBox.Size = UDim2.new(0.8, 0, 0, 40)
-KBox.Position = UDim2.new(0.1, 0, 0, 106)
-KBox.BackgroundColor3 = Color3.fromRGB(14, 12, 26)
-KBox.TextColor3 = Color3.fromRGB(221, 214, 254)
-KBox.PlaceholderText = "key aqui..."
-KBox.PlaceholderColor3 = Color3.fromRGB(76, 29, 149)
-KBox.Text = ""
-KBox.Font = Enum.Font.GothamBold
-KBox.TextSize = 13
-KBox.BorderSizePixel = 0
-KBox.ClearTextOnFocus = false
-Instance.new("UICorner", KBox).CornerRadius = UDim.new(0, 8)
-local KBoxStroke = Instance.new("UIStroke", KBox)
-KBoxStroke.Color = Color3.fromRGB(74, 29, 150)
-KBoxStroke.Thickness = 1
-KBox.Focused:Connect(function()
-	TweenService:Create(KBoxStroke, TweenInfo.new(0.15), {Color=Color3.fromRGB(124,58,237)}):Play()
-end)
-KBox.FocusLost:Connect(function()
-	TweenService:Create(KBoxStroke, TweenInfo.new(0.15), {Color=Color3.fromRGB(74,29,150)}):Play()
-end)
- 
-local KStatus = Instance.new("TextLabel", KMain)
-KStatus.Size = UDim2.new(1, 0, 0, 14)
-KStatus.Position = UDim2.new(0, 0, 0, 152)
-KStatus.BackgroundTransparency = 1
-KStatus.Text = ""
-KStatus.TextColor3 = Color3.fromRGB(239, 68, 68)
-KStatus.Font = Enum.Font.GothamBold
-KStatus.TextSize = 10
-KStatus.TextXAlignment = Enum.TextXAlignment.Center
- 
-local KBtn = Instance.new("TextButton", KMain)
-KBtn.Size = UDim2.new(0.5, 0, 0, 36)
-KBtn.Position = UDim2.new(0.25, 0, 0, 170)
-KBtn.BackgroundColor3 = Color3.fromRGB(124, 58, 237)
-KBtn.Text = "CONFIRMAR"
-KBtn.TextColor3 = Color3.fromRGB(237, 233, 254)
-KBtn.Font = Enum.Font.GothamBlack
-KBtn.TextSize = 11
-KBtn.BorderSizePixel = 0
-Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 8)
-local KBtnStroke = Instance.new("UIStroke", KBtn)
-KBtnStroke.Color = Color3.fromRGB(167, 139, 250)
-KBtnStroke.Thickness = 1
- 
-KBtn.MouseEnter:Connect(function()
-	TweenService:Create(KBtn, TweenInfo.new(0.12), {BackgroundColor3=Color3.fromRGB(109,40,217)}):Play()
-end)
-KBtn.MouseLeave:Connect(function()
-	TweenService:Create(KBtn, TweenInfo.new(0.12), {BackgroundColor3=Color3.fromRGB(124,58,237)}):Play()
-end)
- 
-KMain.Size = UDim2.new(0, 0, 0, 0)
-TweenService:Create(KMain, TweenInfo.new(0.4, Enum.EasingStyle.Back), {Size=UDim2.new(0,400,0,220)}):Play()
- 
-KBtn.MouseButton1Click:Connect(function()
-	if KBox.Text == CorrectKey then
-		KStatus.TextColor3 = Color3.fromRGB(52, 211, 153)
-		KStatus.Text = "✓  Chave válida!"
-		task.wait(0.8)
-		_G.NpazKeyPassed = true
-		KeyGui:Destroy()
-	else
-		KStatus.TextColor3 = Color3.fromRGB(239, 68, 68)
-		KStatus.Text = "✕  Chave inválida"
-		TweenService:Create(KBox, TweenInfo.new(0.05), {Position=UDim2.new(0.1,6,0,106)}):Play()
-		task.wait(0.05)
-		TweenService:Create(KBox, TweenInfo.new(0.05), {Position=UDim2.new(0.1,-6,0,106)}):Play()
-		task.wait(0.05)
-		TweenService:Create(KBox, TweenInfo.new(0.05), {Position=UDim2.new(0.1,0,0,106)}):Play()
-		task.wait(1.2)
-		LP:Kick("Chave inválida — Npaz LHub")
-	end
-end)
+--// NPaz LHub (Key System Removido)
  
 -- ============================================================
 --  STATE / CONFIG
@@ -175,20 +33,21 @@ local State = {
 	tpDownEnabled = false, fov120Enabled = false,
 }
  
+-- CORRIGIDO: Sem conflitos de teclas
 local Keys = {
-	autoBat = Enum.KeyCode.X,
-	speed = Enum.KeyCode.A,
-	lagSpeed = Enum.KeyCode.H,
-	tpDown = Enum.KeyCode.T,
-	fov120 = Enum.KeyCode.L,
-	guiHide = Enum.KeyCode.LeftControl,
-	brainrotReturnLeft = Enum.KeyCode.F,
-	brainrotReturnRight = Enum.KeyCode.G,
-	autoLeft = Enum.KeyCode.L,
-	autoRight = Enum.KeyCode.R,
-	dropBrainrot = Enum.KeyCode.G,
-	float = Enum.KeyCode.J,
-	autoPlay = Enum.KeyCode.P,
+	autoBat             = Enum.KeyCode.X,
+	speed               = Enum.KeyCode.A,
+	lagSpeed            = Enum.KeyCode.H,
+	tpDown              = Enum.KeyCode.T,
+	fov120              = Enum.KeyCode.K,   -- era L, conflitava com autoLeft
+	guiHide             = Enum.KeyCode.LeftControl,
+	brainrotReturnLeft  = Enum.KeyCode.F,
+	brainrotReturnRight = Enum.KeyCode.C,   -- era G, conflitava com dropBrainrot
+	autoLeft            = Enum.KeyCode.L,
+	autoRight           = Enum.KeyCode.R,
+	dropBrainrot        = Enum.KeyCode.G,
+	float               = Enum.KeyCode.J,
+	autoPlay            = Enum.KeyCode.P,
 }
  
 local Steal = {
@@ -253,22 +112,22 @@ local brainrotReturnLeftKeyBtn, brainrotReturnRightKeyBtn
 local setLagSpeed, setTpDown, setFov120
  
 -- ============================================================
---  PALETA DE CORES
+--  PALETA DE CORES (preto e branco)
 -- ============================================================
-local C_BG      = Color3.fromRGB(7, 6, 15)
-local C_PANEL   = Color3.fromRGB(14, 12, 26)
-local C_ROW     = Color3.fromRGB(19, 16, 32)
-local C_ROW_HOV = Color3.fromRGB(30, 26, 50)
-local C_BORDER  = Color3.fromRGB(74, 29, 150)
-local C_BORDER2 = Color3.fromRGB(124, 58, 237)
-local C_HEADER  = Color3.fromRGB(10, 8, 18)
-local C_ACCENT  = Color3.fromRGB(167, 139, 250)
-local C_ACCENT2 = Color3.fromRGB(221, 214, 254)
-local C_DIM     = Color3.fromRGB(109, 40, 217)
-local C_WHITE   = Color3.fromRGB(237, 233, 254)
-local C_ON_BG   = Color3.fromRGB(91, 33, 182)
-local C_OFF_BG  = Color3.fromRGB(26, 22, 48)
-local C_KEY_BG  = Color3.fromRGB(26, 22, 48)
+local C_BG      = Color3.fromRGB(10, 10, 10)
+local C_PANEL   = Color3.fromRGB(17, 17, 17)
+local C_ROW     = Color3.fromRGB(17, 17, 17)
+local C_ROW_HOV = Color3.fromRGB(28, 28, 28)
+local C_BORDER  = Color3.fromRGB(50, 50, 50)
+local C_BORDER2 = Color3.fromRGB(200, 200, 200)
+local C_HEADER  = Color3.fromRGB(12, 12, 12)
+local C_ACCENT  = Color3.fromRGB(160, 160, 160)
+local C_ACCENT2 = Color3.fromRGB(220, 220, 220)
+local C_DIM     = Color3.fromRGB(80, 80, 80)
+local C_WHITE   = Color3.fromRGB(255, 255, 255)
+local C_ON_BG   = Color3.fromRGB(60, 60, 60)
+local C_OFF_BG  = Color3.fromRGB(26, 26, 26)
+local C_KEY_BG  = Color3.fromRGB(22, 22, 22)
  
 -- ============================================================
 --  ANIMAÇÕES
@@ -472,11 +331,6 @@ local function makeDraggable(frame, shadowFrame, isMain)
 end
  
 -- ============================================================
---  AGUARDA KEY PASS
--- ============================================================
-repeat task.wait() until _G.NpazKeyPassed == true
- 
--- ============================================================
 --  GUI PRINCIPAL
 -- ============================================================
 local gui = Instance.new("ScreenGui")
@@ -506,7 +360,7 @@ headerDiv.BackgroundColor3=C_BORDER; headerDiv.BorderSizePixel=0; headerDiv.ZInd
  
 local headerGem = Instance.new("Frame",header)
 headerGem.Size=UDim2.new(0,28,0,28); headerGem.Position=UDim2.new(0,14,0.5,-14)
-headerGem.BackgroundColor3=C_BORDER2; headerGem.BorderSizePixel=0; headerGem.ZIndex=6
+headerGem.BackgroundColor3=C_BORDER; headerGem.BorderSizePixel=0; headerGem.ZIndex=6
 Instance.new("UICorner",headerGem).CornerRadius=UDim.new(0,7)
 local headerGemStroke=Instance.new("UIStroke",headerGem); headerGemStroke.Color=C_ACCENT; headerGemStroke.Thickness=1
 local headerGemLbl=Instance.new("TextLabel",headerGem)
@@ -537,8 +391,8 @@ local closeBtnStroke=Instance.new("UIStroke",closeBtn); closeBtnStroke.Color=C_B
 closeBtnRef = closeBtn
  
 closeBtn.MouseEnter:Connect(function()
-	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=Color3.fromRGB(127,29,29),TextColor3=C_WHITE}):Play()
-	TweenService:Create(closeBtnStroke,TweenInfo.new(0.12),{Color=Color3.fromRGB(239,68,68)}):Play()
+	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=Color3.fromRGB(60,10,10),TextColor3=C_WHITE}):Play()
+	TweenService:Create(closeBtnStroke,TweenInfo.new(0.12),{Color=Color3.fromRGB(200,50,50)}):Play()
 end)
 closeBtn.MouseLeave:Connect(function()
 	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=C_KEY_BG,TextColor3=C_ACCENT}):Play()
@@ -594,11 +448,73 @@ local function makeSectionLabel(icon, text)
 	lbl.TextXAlignment=Enum.TextXAlignment.Left
 end
  
+-- Speed grid (4 cards)
+local function makeSpeedGrid()
+	local container = Instance.new("Frame", scroll)
+	container.Size = UDim2.new(1, 0, 0, 52)
+	container.BackgroundTransparency = 1
+	container.BorderSizePixel = 0
+	container.LayoutOrder = LO()
+	local grid = Instance.new("UIGridLayout", container)
+	grid.CellSize = UDim2.new(0.25, -3, 1, 0)
+	grid.CellPadding = UDim2.new(0, 4, 0, 0)
+	grid.SortOrder = Enum.SortOrder.LayoutOrder
+	local labels = {"Normal", "Carry", "N.Lagger", "C.Lagger"}
+	local defaults = {59, 29, 13, 29}
+	local stateKeys = {"normalSpeed", "carrySpeed", "lagSpeed", "carrySpeed"}
+	local boxes = {}
+	for i = 1, 4 do
+		local card = Instance.new("Frame", container)
+		card.BackgroundColor3 = C_PANEL
+		card.BorderSizePixel = 0
+		card.LayoutOrder = i
+		Instance.new("UICorner", card).CornerRadius = UDim.new(0, 7)
+		local cs = Instance.new("UIStroke", card); cs.Color = C_BORDER; cs.Thickness = 1
+		local lbl = Instance.new("TextLabel", card)
+		lbl.Size = UDim2.new(1, 0, 0, 16)
+		lbl.Position = UDim2.new(0, 0, 0, 6)
+		lbl.BackgroundTransparency = 1
+		lbl.Text = labels[i]
+		lbl.TextColor3 = C_DIM
+		lbl.Font = Enum.Font.GothamBold
+		lbl.TextSize = 8
+		lbl.TextXAlignment = Enum.TextXAlignment.Center
+		local box = Instance.new("TextBox", card)
+		box.Size = UDim2.new(1, -8, 0, 20)
+		box.Position = UDim2.new(0, 4, 0, 24)
+		box.BackgroundColor3 = C_KEY_BG
+		box.BorderSizePixel = 0
+		box.Text = tostring(defaults[i])
+		box.TextColor3 = C_ACCENT2
+		box.Font = Enum.Font.GothamBlack
+		box.TextSize = 14
+		box.TextXAlignment = Enum.TextXAlignment.Center
+		box.ClearTextOnFocus = false
+		Instance.new("UICorner", box).CornerRadius = UDim.new(0, 4)
+		local bs = Instance.new("UIStroke", box); bs.Color = C_BORDER; bs.Thickness = 1
+		box.Focused:Connect(function()
+			TweenService:Create(bs, TweenInfo.new(0.15), {Color=C_BORDER2}):Play()
+		end)
+		local key = stateKeys[i]
+		box.FocusLost:Connect(function()
+			TweenService:Create(bs, TweenInfo.new(0.15), {Color=C_BORDER}):Play()
+			local n = tonumber(box.Text)
+			if n and n > 0 and n <= 500 then
+				State[key] = n
+			else
+				box.Text = tostring(State[key])
+			end
+		end)
+		boxes[i] = box
+	end
+	return boxes
+end
+ 
 local function makeInputRow(label, default, onChange)
 	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36)
 	row.BackgroundColor3=C_ROW; row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	local rs=Instance.new("UIStroke",row); rs.Color=Color3.fromRGB(40,32,70); rs.Thickness=1
+	local rs=Instance.new("UIStroke",row); rs.Color=Color3.fromRGB(30,30,30); rs.Thickness=1
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
 	bar.BackgroundColor3=C_BORDER; bar.BorderSizePixel=0
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
@@ -628,7 +544,7 @@ local function makeStatusRow(label, valTxt)
 	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,34); row.BackgroundColor3=C_PANEL
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(40,32,70)
+	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(0.5,0,1,0); lbl.Position=UDim2.new(0,12,0,0)
 	lbl.BackgroundTransparency=1; lbl.Text=label; lbl.TextColor3=C_DIM; lbl.Font=Enum.Font.GothamBold
 	lbl.TextSize=10; lbl.TextXAlignment=Enum.TextXAlignment.Left
@@ -663,7 +579,7 @@ local function makeKeybindRow(label, currentKey, onChanged)
 	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36); row.BackgroundColor3=C_ROW
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(40,32,70)
+	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
 	bar.BackgroundColor3=C_BORDER; bar.BorderSizePixel=0
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
@@ -707,7 +623,7 @@ local function makeToggleRow(label, defaultKey, defaultOn, onToggle, onKeyChange
 	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36); row.BackgroundColor3=C_ROW
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(40,32,70)
+	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
 	bar.BackgroundColor3=defaultOn and C_BORDER2 or C_BORDER; bar.BorderSizePixel=0
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
@@ -786,14 +702,13 @@ end
 -- ============================================================
 --  CONSTRUÇÃO DO SCROLL
 -- ============================================================
-local modeValLbl, normalBox, carryBox, lagSpeedBox, saveBtn
+local modeValLbl, saveBtn
 local autoBatKeyBtn, speedKeyBtn, lagSpeedKeyBtn, tpDownKeyBtn, fov120KeyBtn
 local autoLeftKeyBtn, autoRightKeyBtn, guiHideKeyBtn, floatHeightBox, dropBrainrotKeyBtn
  
 makeSectionLabel("⚡", "Speed")
-normalBox   = makeInputRow("Normal Speed",  State.normalSpeed,  function(v) local n=tonumber(v); if n and n>0 and n<=500 then State.normalSpeed=n  end end)
-carryBox    = makeInputRow("Carry Speed",   State.carrySpeed,   function(v) local n=tonumber(v); if n and n>0 and n<=500 then State.carrySpeed=n   end end)
-lagSpeedBox = makeInputRow("Lag Speed",     State.lagSpeed,     function(v) local n=tonumber(v); if n and n>0 and n<=500 then State.lagSpeed=n     end end)
+local speedBoxes = makeSpeedGrid()
+makeGap(4)
 speedKeyBtn    = makeKeybindRow("Speed Toggle",     Keys.speed,    function(k) Keys.speed=k    end)
 lagSpeedKeyBtn = makeKeybindRow("Lag Speed Toggle", Keys.lagSpeed, function(k) Keys.lagSpeed=k end)
 modeValLbl = makeStatusRow("Modo atual", "Normal")
@@ -843,7 +758,7 @@ setBrainrotReturnRight, brainrotReturnRightKeyBtn = makeToggleRow("Brainrot Retu
 		State.brainrotReturnRightEnabled=on
 		if on then State.brainrotReturnLeftEnabled=false; if setBrainrotReturnLeft then setBrainrotReturnLeft(false) end end
 	end, function(k) Keys.brainrotReturnRight=k end)
-setAutoPlay, _ = makeToggleRow("Auto Play",  Keys.autoPlay,  false, function(on) toggleAutoPlay(on) end, function(k) Keys.autoPlay=k end)
+setAutoPlay, _ = makeToggleRow("Auto Play", Keys.autoPlay, false, function(on) toggleAutoPlay(on) end, function(k) Keys.autoPlay=k end)
 setAutoLeft,  autoLeftKeyBtn  = makeToggleRow("Auto Left",  Keys.autoLeft,  false,
 	function(on) State.autoLeftEnabled=on;  if on then startAutoLeft()  else stopAutoLeft()  end end,
 	function(k) Keys.autoLeft=k  end)
@@ -861,6 +776,7 @@ setFloat, _ = makeToggleRow("Float", Keys.float, false,
 makeGap(4); makeDivider(); makeGap(4)
  
 makeSectionLabel("📷", "Camera")
+-- CORRIGIDO: setFov120 agora captura o retorno corretamente
 setFov120, fov120KeyBtn = makeToggleRow("FOV 120°", Keys.fov120, false, function(on)
 	State.fov120Enabled=on; if on then startFOV() else stopFOV() end
 end, function(k) Keys.fov120=k end)
@@ -880,23 +796,64 @@ footerLbl.Font=Enum.Font.GothamBold; footerLbl.TextSize=9; footerLbl.TextXAlignm
 -- ============================================================
 --  MINIMIZADO
 -- ============================================================
-local mini=Instance.new("TextButton",gui)
-mini.Name="NpazMini"; mini.Size=UDim2.new(0,100,0,28); mini.Position=UDim2.new(0,20,0,20)
-mini.BackgroundColor3=C_PANEL; mini.BorderSizePixel=0; mini.Text=""; mini.ZIndex=20; mini.Visible=false
-Instance.new("UICorner",mini).CornerRadius=UDim.new(0,8); Instance.new("UIStroke",mini).Color=C_BORDER2
-local miniGem=Instance.new("Frame",mini); miniGem.Size=UDim2.new(0,16,0,16); miniGem.Position=UDim2.new(0,8,0.5,-8)
-miniGem.BackgroundColor3=C_BORDER2; miniGem.BorderSizePixel=0; miniGem.ZIndex=22
-Instance.new("UICorner",miniGem).CornerRadius=UDim.new(0,4)
-local miniGemLbl=Instance.new("TextLabel",miniGem); miniGemLbl.Size=UDim2.new(1,0,1,0)
-miniGemLbl.BackgroundTransparency=1; miniGemLbl.Text="N"; miniGemLbl.TextColor3=C_ACCENT2
-miniGemLbl.Font=Enum.Font.GothamBlack; miniGemLbl.TextSize=9; miniGemLbl.ZIndex=23
+local mini=Instance.new("Frame",gui)
+mini.Name="NpazMini"
+mini.Size=UDim2.new(0,110,0,30)
+mini.Position=UDim2.new(0,20,0,20)
+mini.BackgroundColor3=Color3.fromRGB(8,8,8)
+mini.BorderSizePixel=0
+mini.ZIndex=20
+mini.Visible=false
+Instance.new("UICorner",mini).CornerRadius=UDim.new(0,8)
+local miniStroke=Instance.new("UIStroke",mini)
+miniStroke.Color=Color3.fromRGB(220,220,220)
+miniStroke.Thickness=1.2
+ 
+local miniGem=Instance.new("Frame",mini)
+miniGem.Size=UDim2.new(0,18,0,18)
+miniGem.Position=UDim2.new(0,8,0.5,-9)
+miniGem.BackgroundColor3=Color3.fromRGB(40,40,40)
+miniGem.BorderSizePixel=0
+miniGem.ZIndex=22
+Instance.new("UICorner",miniGem).CornerRadius=UDim.new(0,5)
+local miniGemStroke=Instance.new("UIStroke",miniGem)
+miniGemStroke.Color=Color3.fromRGB(180,180,180)
+miniGemStroke.Thickness=1
+local miniGemLbl=Instance.new("TextLabel",miniGem)
+miniGemLbl.Size=UDim2.new(1,0,1,0)
+miniGemLbl.BackgroundTransparency=1
+miniGemLbl.Text="N"
+miniGemLbl.TextColor3=Color3.fromRGB(230,230,230)
+miniGemLbl.Font=Enum.Font.GothamBlack
+miniGemLbl.TextSize=10
+miniGemLbl.ZIndex=23
+ 
 local miniTxt=Instance.new("TextLabel",mini)
-miniTxt.Size=UDim2.new(1,-32,1,0); miniTxt.Position=UDim2.new(0,30,0,0)
-miniTxt.BackgroundTransparency=1; miniTxt.Text="Npaz"; miniTxt.TextColor3=C_ACCENT
-miniTxt.Font=Enum.Font.GothamBold; miniTxt.TextSize=11; miniTxt.TextXAlignment=Enum.TextXAlignment.Left; miniTxt.ZIndex=21
-mini.MouseButton1Click:Connect(function() State.guiVisible=true; main.Visible=true; shadow.Visible=true; mini.Visible=false end)
-mini.MouseEnter:Connect(function() TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=C_ROW}):Play() end)
-mini.MouseLeave:Connect(function() TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=C_PANEL}):Play() end)
+miniTxt.Size=UDim2.new(1,-36,1,0)
+miniTxt.Position=UDim2.new(0,32,0,0)
+miniTxt.BackgroundTransparency=1
+miniTxt.Text="Npaz LHub"
+miniTxt.TextColor3=Color3.fromRGB(210,210,210)
+miniTxt.Font=Enum.Font.GothamBold
+miniTxt.TextSize=11
+miniTxt.TextXAlignment=Enum.TextXAlignment.Left
+miniTxt.ZIndex=21
+ 
+local miniClick=Instance.new("TextButton",mini)
+miniClick.Size=UDim2.new(1,0,1,0)
+miniClick.BackgroundTransparency=1
+miniClick.Text=""
+miniClick.ZIndex=25
+miniClick.MouseButton1Click:Connect(function()
+	State.guiVisible=true
+	main.Visible=true; shadow.Visible=true; mini.Visible=false
+end)
+miniClick.MouseEnter:Connect(function()
+	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=Color3.fromRGB(20,20,20)}):Play()
+end)
+miniClick.MouseLeave:Connect(function()
+	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=Color3.fromRGB(8,8,8)}):Play()
+end)
 makeDraggable(mini)
  
 -- ============================================================
@@ -1508,9 +1465,9 @@ local function loadConfig()
 	if not hasFile then return end
 	local ok,cfg=pcall(function() return HttpService:JSONDecode(readfile("NpazLHubConfig.json")) end)
 	if not ok or not cfg then return end
-	if cfg.normalSpeed and type(cfg.normalSpeed)=="number" then State.normalSpeed=cfg.normalSpeed; normalBox.Text=tostring(cfg.normalSpeed) end
-	if cfg.carrySpeed  and type(cfg.carrySpeed)=="number"  then State.carrySpeed=cfg.carrySpeed;   carryBox.Text=tostring(cfg.carrySpeed)   end
-	if cfg.lagSpeed    and type(cfg.lagSpeed)=="number"    then State.lagSpeed=cfg.lagSpeed;       lagSpeedBox.Text=tostring(cfg.lagSpeed)   end
+	if cfg.normalSpeed and type(cfg.normalSpeed)=="number" then State.normalSpeed=cfg.normalSpeed; if speedBoxes[1] then speedBoxes[1].Text=tostring(cfg.normalSpeed) end end
+	if cfg.carrySpeed  and type(cfg.carrySpeed)=="number"  then State.carrySpeed=cfg.carrySpeed;   if speedBoxes[2] then speedBoxes[2].Text=tostring(cfg.carrySpeed) end end
+	if cfg.lagSpeed    and type(cfg.lagSpeed)=="number"    then State.lagSpeed=cfg.lagSpeed;       if speedBoxes[3] then speedBoxes[3].Text=tostring(cfg.lagSpeed) end end
 	if cfg.autoBatKey  and Enum.KeyCode[cfg.autoBatKey]    then Keys.autoBat=Enum.KeyCode[cfg.autoBatKey]; if autoBatKeyBtn then autoBatKeyBtn.Text=cfg.autoBatKey end end
 	if cfg.speedKey    and Enum.KeyCode[cfg.speedKey]      then Keys.speed=Enum.KeyCode[cfg.speedKey]; if speedKeyBtn then speedKeyBtn.Text=cfg.speedKey end end
 	if cfg.lagSpeedKey and Enum.KeyCode[cfg.lagSpeedKey]   then Keys.lagSpeed=Enum.KeyCode[cfg.lagSpeedKey]; if lagSpeedKeyBtn then lagSpeedKeyBtn.Text=cfg.lagSpeedKey end end
@@ -1734,4 +1691,4 @@ task.spawn(function()
 end)
  
 loadConfig()
-print("[Npaz LHub] Carregado com sucesso! v2.0 Redesign")
+print("[Npaz LHub] Carregado com sucesso! v2.0 — Key System Removido")
