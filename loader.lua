@@ -25,7 +25,7 @@ end
 
 -- Loop que verifica a cada 60 segundos
 task.spawn(function()
-    while task.wait(60) do
+    while task.wait(5) do
         local r = verificarKey()
         if r == "expired" then
             game:GetService("Players").LocalPlayer:Kick("⏰ Sua key expirou — Npaz LHub")
