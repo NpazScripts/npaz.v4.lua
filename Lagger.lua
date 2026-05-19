@@ -9,13 +9,13 @@ local LocalPlayer = Players.LocalPlayer
 local isMobile = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
 
 local LAGGER_CONFIG = isMobile and {
-    TableIncrease = 190,
-    Tries = 1,
-    LoopWaitTime = 0.9
+    TableIncrease = 80,
+    Tries = 8,
+    LoopWaitTime = 0.8
 } or {
-    TableIncrease = 120,
-    Tries = 1,
-    LoopWaitTime = 0.25
+    TableIncrease = 80,
+    Tries = 8,
+    LoopWaitTime = 0.8
 }
 
 local CUSTOM_REMOTE_PATH = "RobloxReplicatedStorage.SetPlayerBlockList"
@@ -70,6 +70,9 @@ local function bomb(tableincrease, tries)
             task.wait(0.08)
         end
     end
+    maintable = nil
+    spammedtable = nil
+    collectgarbage("collect")
 end
 
 local laggerEnabled = false
