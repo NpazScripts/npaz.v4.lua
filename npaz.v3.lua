@@ -1,3 +1,4 @@
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
@@ -5,6 +6,7 @@ local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
 local ContentProvider = game:GetService("ContentProvider")
 local Workspace = game:GetService("Workspace")
+local Debris = game:GetService("Debris")
 local LP = Players.LocalPlayer
  
 --// NPaz LHub (Key System Removido)
@@ -112,22 +114,145 @@ local brainrotReturnLeftKeyBtn, brainrotReturnRightKeyBtn
 local setLagSpeed, setTpDown, setFov120
  
 -- ============================================================
---  PALETA DE CORES (preto e branco)
+--  PALETA DE CORES (neon púrpura)
 -- ============================================================
-local C_BG      = Color3.fromRGB(10, 10, 10)
-local C_PANEL   = Color3.fromRGB(17, 17, 17)
-local C_ROW     = Color3.fromRGB(17, 17, 17)
-local C_ROW_HOV = Color3.fromRGB(28, 28, 28)
-local C_BORDER  = Color3.fromRGB(50, 50, 50)
-local C_BORDER2 = Color3.fromRGB(200, 200, 200)
-local C_HEADER  = Color3.fromRGB(12, 12, 12)
-local C_ACCENT  = Color3.fromRGB(160, 160, 160)
-local C_ACCENT2 = Color3.fromRGB(220, 220, 220)
-local C_DIM     = Color3.fromRGB(80, 80, 80)
+local C_BG      = Color3.fromRGB(10, 8, 25)
+local C_PANEL   = Color3.fromRGB(22, 10, 45)
+local C_ROW     = Color3.fromRGB(18, 8, 40)
+local C_ROW_HOV = Color3.fromRGB(70, 20, 170)
+local C_BORDER  = Color3.fromRGB(135, 45, 225)
+local C_BORDER2 = Color3.fromRGB(195, 95, 255)
+local C_HEADER  = Color3.fromRGB(12, 7, 25)
+local C_ACCENT  = Color3.fromRGB(180, 100, 255)
+local C_ACCENT2 = Color3.fromRGB(235, 185, 255)
+local C_DIM     = Color3.fromRGB(165, 130, 255)
 local C_WHITE   = Color3.fromRGB(255, 255, 255)
-local C_ON_BG   = Color3.fromRGB(60, 60, 60)
-local C_OFF_BG  = Color3.fromRGB(26, 26, 26)
-local C_KEY_BG  = Color3.fromRGB(22, 22, 22)
+local C_ON_BG   = Color3.fromRGB(95, 30, 190)
+local C_OFF_BG  = Color3.fromRGB(16, 10, 34)
+local C_KEY_BG  = Color3.fromRGB(30, 12, 60)
+local NeonThemes = {
+	{
+		bg = Color3.fromRGB(10, 8, 25),
+		panel = Color3.fromRGB(22, 10, 45),
+		row = Color3.fromRGB(18, 8, 40),
+		rowHov = Color3.fromRGB(70, 20, 170),
+		border = Color3.fromRGB(135, 45, 225),
+		border2 = Color3.fromRGB(195, 95, 255),
+		header = Color3.fromRGB(12, 7, 25),
+		accent = Color3.fromRGB(180, 100, 255),
+		accent2 = Color3.fromRGB(235, 185, 255),
+		dim = Color3.fromRGB(165, 130, 255),
+		onBg = Color3.fromRGB(95, 30, 190),
+		offBg = Color3.fromRGB(16, 10, 34),
+		keyBg = Color3.fromRGB(30, 12, 60),
+		white = Color3.fromRGB(255, 255, 255),
+	},
+	{
+		bg = Color3.fromRGB(8, 12, 40),
+		panel = Color3.fromRGB(10, 18, 60),
+		row = Color3.fromRGB(10, 16, 55),
+		rowHov = Color3.fromRGB(40, 90, 220),
+		border = Color3.fromRGB(70, 135, 255),
+		border2 = Color3.fromRGB(135, 190, 255),
+		header = Color3.fromRGB(8, 10, 30),
+		accent = Color3.fromRGB(80, 195, 255),
+		accent2 = Color3.fromRGB(175, 245, 255),
+		dim = Color3.fromRGB(130, 215, 255),
+		onBg = Color3.fromRGB(20, 95, 180),
+		offBg = Color3.fromRGB(10, 15, 45),
+		keyBg = Color3.fromRGB(15, 20, 55),
+		white = Color3.fromRGB(255, 255, 255),
+	},
+	{
+		bg = Color3.fromRGB(8, 18, 20),
+		panel = Color3.fromRGB(12, 25, 18),
+		row = Color3.fromRGB(14, 28, 22),
+		rowHov = Color3.fromRGB(55, 255, 135),
+		border = Color3.fromRGB(30, 200, 130),
+		border2 = Color3.fromRGB(95, 255, 170),
+		header = Color3.fromRGB(8, 20, 18),
+		accent = Color3.fromRGB(90, 255, 170),
+		accent2 = Color3.fromRGB(170, 255, 210),
+		dim = Color3.fromRGB(190, 255, 220),
+		onBg = Color3.fromRGB(12, 90, 55),
+		offBg = Color3.fromRGB(10, 18, 20),
+		keyBg = Color3.fromRGB(12, 25, 30),
+		white = Color3.fromRGB(255, 255, 255),
+	},
+}
+local neonThemeIndex = 1
+local themeTargets = {}
+local function themeColor(inst, prop, role)
+	local roleColors = {
+		bg = C_BG,
+		panel = C_PANEL,
+		row = C_ROW,
+		rowHov = C_ROW_HOV,
+		border = C_BORDER,
+		border2 = C_BORDER2,
+		header = C_HEADER,
+		accent = C_ACCENT,
+		accent2 = C_ACCENT2,
+		dim = C_DIM,
+		onBg = C_ON_BG,
+		offBg = C_OFF_BG,
+		keyBg = C_KEY_BG,
+		white = C_WHITE,
+	}
+	local color = roleColors[role]
+	if color then inst[prop] = color end
+	if inst.SetAttribute then
+		inst:SetAttribute("ThemeRole", role)
+		inst:SetAttribute("ThemeProperty", prop)
+	end
+	table.insert(themeTargets, inst)
+	return inst
+end
+
+local function applyThemeRole(role, color)
+	for _, inst in ipairs(themeTargets) do
+		if inst.GetAttribute and inst:GetAttribute("ThemeRole") == role then
+			local prop = inst:GetAttribute("ThemeProperty")
+			if prop then inst[prop] = color end
+		end
+	end
+end
+
+local function applyNeonTheme(index)
+	local theme = NeonThemes[index]
+	if not theme then return end
+	C_BG = theme.bg
+	C_PANEL = theme.panel
+	C_ROW = theme.row
+	C_ROW_HOV = theme.rowHov
+	C_BORDER = theme.border
+	C_BORDER2 = theme.border2
+	C_HEADER = theme.header
+	C_ACCENT = theme.accent
+	C_ACCENT2 = theme.accent2
+	C_DIM = theme.dim
+	C_ON_BG = theme.onBg
+	C_OFF_BG = theme.offBg
+	C_KEY_BG = theme.keyBg
+	applyThemeRole("bg", C_BG)
+	applyThemeRole("panel", C_PANEL)
+	applyThemeRole("row", C_ROW)
+	applyThemeRole("rowHov", C_ROW_HOV)
+	applyThemeRole("border", C_BORDER)
+	applyThemeRole("border2", C_BORDER2)
+	applyThemeRole("header", C_HEADER)
+	applyThemeRole("accent", C_ACCENT)
+	applyThemeRole("accent2", C_ACCENT2)
+	applyThemeRole("dim", C_DIM)
+	applyThemeRole("onBg", C_ON_BG)
+	applyThemeRole("offBg", C_OFF_BG)
+	applyThemeRole("keyBg", C_KEY_BG)
+end
+
+local function cycleNeonTheme()
+	neonThemeIndex = neonThemeIndex % #NeonThemes + 1
+	applyNeonTheme(neonThemeIndex)
+end
  
 -- ============================================================
 --  ANIMAÇÕES
@@ -344,55 +469,60 @@ Instance.new("UICorner",shadow).CornerRadius=UDim.new(0,14)
  
 local main = Instance.new("Frame",gui)
 main.Name="Main"; main.Size=UDim2.new(0,290,0,590); main.Position=UDim2.new(0,20,0,20)
-main.BackgroundColor3=C_BG; main.BorderSizePixel=0; main.Active=true; main.ClipsDescendants=true
+main.BorderSizePixel=0; main.Active=true; main.ClipsDescendants=true
 Instance.new("UICorner",main).CornerRadius=UDim.new(0,12)
-local mainStroke = Instance.new("UIStroke",main); mainStroke.Color=C_BORDER2; mainStroke.Thickness=1
+local mainStroke = Instance.new("UIStroke",main); themeColor(mainStroke,"Color","border2"); mainStroke.Thickness=1
+themeColor(main,"BackgroundColor3","bg")
  
 local topGlow = Instance.new("Frame",main)
 topGlow.Size=UDim2.new(0.6,0,0,1); topGlow.Position=UDim2.new(0.2,0,0,0)
-topGlow.BackgroundColor3=C_ACCENT; topGlow.BackgroundTransparency=0.5; topGlow.BorderSizePixel=0
+topGlow.BackgroundTransparency=0.5; topGlow.BorderSizePixel=0
+themeColor(topGlow,"BackgroundColor3","accent")
  
 local header = Instance.new("Frame",main)
-header.Size=UDim2.new(1,0,0,60); header.BackgroundColor3=C_HEADER; header.BorderSizePixel=0; header.ZIndex=5
+header.Size=UDim2.new(1,0,0,60); header.BorderSizePixel=0; header.ZIndex=5
+themeColor(header,"BackgroundColor3","header")
 local headerDiv = Instance.new("Frame",header)
 headerDiv.Size=UDim2.new(1,0,0,1); headerDiv.Position=UDim2.new(0,0,1,-1)
-headerDiv.BackgroundColor3=C_BORDER; headerDiv.BorderSizePixel=0; headerDiv.ZIndex=6
+headerDiv.BorderSizePixel=0; headerDiv.ZIndex=6
+themeColor(headerDiv,"BackgroundColor3","border")
  
 local headerGem = Instance.new("Frame",header)
 headerGem.Size=UDim2.new(0,28,0,28); headerGem.Position=UDim2.new(0,14,0.5,-14)
-headerGem.BackgroundColor3=C_BORDER; headerGem.BorderSizePixel=0; headerGem.ZIndex=6
+headerGem.BorderSizePixel=0; headerGem.ZIndex=6
 Instance.new("UICorner",headerGem).CornerRadius=UDim.new(0,7)
-local headerGemStroke=Instance.new("UIStroke",headerGem); headerGemStroke.Color=C_ACCENT; headerGemStroke.Thickness=1
+local headerGemStroke=Instance.new("UIStroke",headerGem); themeColor(headerGemStroke,"Color","accent"); headerGemStroke.Thickness=1
 local headerGemLbl=Instance.new("TextLabel",headerGem)
 headerGemLbl.Size=UDim2.new(1,0,1,0); headerGemLbl.BackgroundTransparency=1
-headerGemLbl.Text="N"; headerGemLbl.TextColor3=C_ACCENT2
+headerGemLbl.Text="N"; themeColor(headerGemLbl,"TextColor3","accent2")
 headerGemLbl.Font=Enum.Font.GothamBlack; headerGemLbl.TextSize=14; headerGemLbl.ZIndex=7
  
 local titleLbl = Instance.new("TextLabel",header)
 titleLbl.Size=UDim2.new(0,140,0,20); titleLbl.Position=UDim2.new(0,48,0,10)
 titleLbl.BackgroundTransparency=1; titleLbl.Text="Npaz LHub"
-titleLbl.TextColor3=C_ACCENT2; titleLbl.Font=Enum.Font.GothamBlack; titleLbl.TextSize=15
+themeColor(titleLbl,"TextColor3","accent2"); titleLbl.Font=Enum.Font.GothamBlack; titleLbl.TextSize=15
 titleLbl.TextXAlignment=Enum.TextXAlignment.Left; titleLbl.ZIndex=6
  
 local verLbl = Instance.new("TextLabel",header)
 verLbl.Size=UDim2.new(0,140,0,14); verLbl.Position=UDim2.new(0,49,0,32)
 verLbl.BackgroundTransparency=1; verLbl.Text="v2.0 · build 2025"
-verLbl.TextColor3=C_DIM; verLbl.Font=Enum.Font.GothamBold; verLbl.TextSize=9
+themeColor(verLbl,"TextColor3","dim"); verLbl.Font=Enum.Font.GothamBold; verLbl.TextSize=9
 verLbl.TextXAlignment=Enum.TextXAlignment.Left; verLbl.ZIndex=6
  
 local closeBtn = Instance.new("TextButton",gui)
 closeBtn.Size=UDim2.new(0,24,0,24)
 closeBtn.Position=UDim2.new(0,20+290-32,0,20+18)
-closeBtn.BackgroundColor3=C_KEY_BG; closeBtn.BorderSizePixel=0
-closeBtn.Text="✕"; closeBtn.TextColor3=C_ACCENT
+closeBtn.BorderSizePixel=0
+themeColor(closeBtn,"BackgroundColor3","keyBg")
+closeBtn.Text="✕"; themeColor(closeBtn,"TextColor3","accent")
 closeBtn.Font=Enum.Font.GothamBold; closeBtn.TextSize=11; closeBtn.ZIndex=50
 Instance.new("UICorner",closeBtn).CornerRadius=UDim.new(0,6)
-local closeBtnStroke=Instance.new("UIStroke",closeBtn); closeBtnStroke.Color=C_BORDER2; closeBtnStroke.Thickness=1
+local closeBtnStroke=Instance.new("UIStroke",closeBtn); themeColor(closeBtnStroke,"Color","border2"); closeBtnStroke.Thickness=1
 closeBtnRef = closeBtn
  
 closeBtn.MouseEnter:Connect(function()
-	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=Color3.fromRGB(60,10,10),TextColor3=C_WHITE}):Play()
-	TweenService:Create(closeBtnStroke,TweenInfo.new(0.12),{Color=Color3.fromRGB(200,50,50)}):Play()
+	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=Color3.fromRGB(110, 30, 220),TextColor3=C_WHITE}):Play()
+	TweenService:Create(closeBtnStroke,TweenInfo.new(0.12),{Color=Color3.fromRGB(235, 150, 255)}):Play()
 end)
 closeBtn.MouseLeave:Connect(function()
 	TweenService:Create(closeBtn,TweenInfo.new(0.12),{BackgroundColor3=C_KEY_BG,TextColor3=C_ACCENT}):Play()
@@ -411,12 +541,21 @@ closeBtn.MouseButton1Click:Connect(function()
 end)
  
 makeDraggable(main, shadow, true)
+
+-- Start neon color cycle
+applyNeonTheme(neonThemeIndex)
+task.spawn(function()
+	while gui and gui.Parent do
+		task.wait(3)
+		cycleNeonTheme()
+	end
+end)
  
 -- SCROLL
 local scroll = Instance.new("ScrollingFrame",main)
 scroll.Size=UDim2.new(1,0,1,-60); scroll.Position=UDim2.new(0,0,0,60)
 scroll.BackgroundTransparency=1; scroll.BorderSizePixel=0; scroll.ScrollBarThickness=2
-scroll.ScrollBarImageColor3=C_BORDER2; scroll.AutomaticCanvasSize=Enum.AutomaticSize.Y
+themeColor(scroll,"ScrollBarImageColor3","border2"); scroll.AutomaticCanvasSize=Enum.AutomaticSize.Y
 scroll.CanvasSize=UDim2.new(0,0,0,0); scroll.ZIndex=2
 local listLayout=Instance.new("UIListLayout",scroll)
 listLayout.SortOrder=Enum.SortOrder.LayoutOrder; listLayout.Padding=UDim.new(0,2)
@@ -434,7 +573,8 @@ end
  
 local function makeDivider()
 	local f=Instance.new("Frame",scroll); f.Size=UDim2.new(1,0,0,1)
-	f.BackgroundColor3=C_BORDER; f.BackgroundTransparency=0.4; f.BorderSizePixel=0; f.LayoutOrder=LO()
+	f.BackgroundTransparency=0.4; f.BorderSizePixel=0; f.LayoutOrder=LO()
+	themeColor(f,"BackgroundColor3","border")
 end
  
 local function makeSectionLabel(icon, text)
@@ -443,7 +583,7 @@ local function makeSectionLabel(icon, text)
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(1,0,1,0)
 	lbl.BackgroundTransparency=1
 	lbl.Text=icon.."  "..text:upper()
-	lbl.TextColor3=C_ACCENT
+	themeColor(lbl,"TextColor3","accent")
 	lbl.Font=Enum.Font.GothamBold; lbl.TextSize=9
 	lbl.TextXAlignment=Enum.TextXAlignment.Left
 end
@@ -465,33 +605,33 @@ local function makeSpeedGrid()
 	local boxes = {}
 	for i = 1, 4 do
 		local card = Instance.new("Frame", container)
-		card.BackgroundColor3 = C_PANEL
 		card.BorderSizePixel = 0
 		card.LayoutOrder = i
 		Instance.new("UICorner", card).CornerRadius = UDim.new(0, 7)
-		local cs = Instance.new("UIStroke", card); cs.Color = C_BORDER; cs.Thickness = 1
+		themeColor(card,"BackgroundColor3","panel")
+		local cs = Instance.new("UIStroke", card); themeColor(cs,"Color","border"); cs.Thickness = 1
 		local lbl = Instance.new("TextLabel", card)
 		lbl.Size = UDim2.new(1, 0, 0, 16)
 		lbl.Position = UDim2.new(0, 0, 0, 6)
 		lbl.BackgroundTransparency = 1
 		lbl.Text = labels[i]
-		lbl.TextColor3 = C_DIM
+		themeColor(lbl,"TextColor3","dim")
 		lbl.Font = Enum.Font.GothamBold
 		lbl.TextSize = 8
 		lbl.TextXAlignment = Enum.TextXAlignment.Center
 		local box = Instance.new("TextBox", card)
 		box.Size = UDim2.new(1, -8, 0, 20)
 		box.Position = UDim2.new(0, 4, 0, 24)
-		box.BackgroundColor3 = C_KEY_BG
+		themeColor(box,"BackgroundColor3","keyBg")
 		box.BorderSizePixel = 0
 		box.Text = tostring(defaults[i])
-		box.TextColor3 = C_ACCENT2
+		themeColor(box,"TextColor3","accent2")
 		box.Font = Enum.Font.GothamBlack
 		box.TextSize = 14
 		box.TextXAlignment = Enum.TextXAlignment.Center
 		box.ClearTextOnFocus = false
 		Instance.new("UICorner", box).CornerRadius = UDim.new(0, 4)
-		local bs = Instance.new("UIStroke", box); bs.Color = C_BORDER; bs.Thickness = 1
+		local bs = Instance.new("UIStroke", box); themeColor(bs,"Color","border"); bs.Thickness = 1
 		box.Focused:Connect(function()
 			TweenService:Create(bs, TweenInfo.new(0.15), {Color=C_BORDER2}):Play()
 		end)
@@ -512,20 +652,22 @@ end
  
 local function makeInputRow(label, default, onChange)
 	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36)
-	row.BackgroundColor3=C_ROW; row.BorderSizePixel=0; row.LayoutOrder=LO()
+	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	local rs=Instance.new("UIStroke",row); rs.Color=Color3.fromRGB(30,30,30); rs.Thickness=1
+	themeColor(row,"BackgroundColor3","row")
+	local rs=Instance.new("UIStroke",row); themeColor(rs,"Color","border"); rs.Thickness=1
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
-	bar.BackgroundColor3=C_BORDER; bar.BorderSizePixel=0
+	bar.BorderSizePixel=0
+	themeColor(bar,"BackgroundColor3","border")
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(0.55,0,1,0); lbl.Position=UDim2.new(0,14,0,0)
-	lbl.BackgroundTransparency=1; lbl.Text=label; lbl.TextColor3=C_ACCENT; lbl.Font=Enum.Font.GothamBold
+	lbl.BackgroundTransparency=1; lbl.Text=label; themeColor(lbl,"TextColor3","accent"); lbl.Font=Enum.Font.GothamBold
 	lbl.TextSize=11; lbl.TextXAlignment=Enum.TextXAlignment.Left
 	local box=Instance.new("TextBox",row); box.Size=UDim2.new(0,72,0,24); box.Position=UDim2.new(1,-78,0.5,-12)
-	box.BackgroundColor3=C_KEY_BG; box.BorderSizePixel=0; box.Text=tostring(default); box.TextColor3=C_ACCENT2
+	themeColor(box,"BackgroundColor3","keyBg"); box.BorderSizePixel=0; box.Text=tostring(default); themeColor(box,"TextColor3","accent2")
 	box.Font=Enum.Font.GothamBold; box.TextSize=11; box.ClearTextOnFocus=false
 	Instance.new("UICorner",box).CornerRadius=UDim.new(0,5)
-	local bs=Instance.new("UIStroke",box); bs.Color=C_BORDER; bs.Thickness=1
+	local bs=Instance.new("UIStroke",box); themeColor(bs,"Color","border"); bs.Thickness=1
 	box.Focused:Connect(function()
 		TweenService:Create(bar,TweenInfo.new(0.15),{BackgroundColor3=C_BORDER2}):Play()
 		TweenService:Create(bs,TweenInfo.new(0.15),{Color=C_BORDER2}):Play()
@@ -541,26 +683,28 @@ local function makeInputRow(label, default, onChange)
 end
  
 local function makeStatusRow(label, valTxt)
-	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,34); row.BackgroundColor3=C_PANEL
+	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,34)
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
+	local stroke = Instance.new("UIStroke",row); themeColor(stroke,"Color","border")
+	themeColor(row,"BackgroundColor3","panel")
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(0.5,0,1,0); lbl.Position=UDim2.new(0,12,0,0)
-	lbl.BackgroundTransparency=1; lbl.Text=label; lbl.TextColor3=C_DIM; lbl.Font=Enum.Font.GothamBold
+	lbl.BackgroundTransparency=1; lbl.Text=label; themeColor(lbl,"TextColor3","dim"); lbl.Font=Enum.Font.GothamBold
 	lbl.TextSize=10; lbl.TextXAlignment=Enum.TextXAlignment.Left
 	local val=Instance.new("TextLabel",row); val.Size=UDim2.new(0.45,-10,1,0); val.Position=UDim2.new(0.52,0,0,0)
-	val.BackgroundTransparency=1; val.Text=valTxt; val.TextColor3=C_ACCENT2
+	val.BackgroundTransparency=1; val.Text=valTxt; themeColor(val,"TextColor3","accent2")
 	val.Font=Enum.Font.GothamBold; val.TextSize=11; val.TextXAlignment=Enum.TextXAlignment.Right
 	return val
 end
  
 local function makeActionBtn(label, onClick)
 	local btn=Instance.new("TextButton",scroll)
-	btn.Size=UDim2.new(1,0,0,34); btn.BackgroundColor3=C_PANEL; btn.BorderSizePixel=0
-	btn.LayoutOrder=LO(); btn.Text=label; btn.TextColor3=C_ACCENT2
+	btn.Size=UDim2.new(1,0,0,34); btn.BorderSizePixel=0
+	btn.LayoutOrder=LO(); btn.Text=label; themeColor(btn,"TextColor3","accent2")
+	themeColor(btn,"BackgroundColor3","panel")
 	btn.Font=Enum.Font.GothamBold; btn.TextSize=11
 	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,7)
-	local bs=Instance.new("UIStroke",btn); bs.Color=C_BORDER2; bs.Thickness=1
+	local bs=Instance.new("UIStroke",btn); themeColor(bs,"Color","border2"); bs.Thickness=1
 	btn.MouseButton1Click:Connect(function()
 		TweenService:Create(btn,TweenInfo.new(0.08),{BackgroundColor3=C_BORDER}):Play()
 		TweenService:Create(bs,TweenInfo.new(0.08),{Color=C_ACCENT2}):Play()
@@ -576,21 +720,23 @@ local function makeActionBtn(label, onClick)
 end
  
 local function makeKeybindRow(label, currentKey, onChanged)
-	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36); row.BackgroundColor3=C_ROW
+	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36)
+	themeColor(row,"BackgroundColor3","row")
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
+	local rowStroke = Instance.new("UIStroke",row); themeColor(rowStroke,"Color","border")
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
-	bar.BackgroundColor3=C_BORDER; bar.BorderSizePixel=0
+	bar.BorderSizePixel=0
+	themeColor(bar,"BackgroundColor3","border")
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(0.55,0,1,0); lbl.Position=UDim2.new(0,14,0,0)
-	lbl.BackgroundTransparency=1; lbl.Text=label; lbl.TextColor3=C_ACCENT; lbl.Font=Enum.Font.GothamBold
+	lbl.BackgroundTransparency=1; lbl.Text=label; themeColor(lbl,"TextColor3","accent"); lbl.Font=Enum.Font.GothamBold
 	lbl.TextSize=11; lbl.TextXAlignment=Enum.TextXAlignment.Left
 	local btn=Instance.new("TextButton",row); btn.Size=UDim2.new(0,66,0,24); btn.Position=UDim2.new(1,-72,0.5,-12)
-	btn.BackgroundColor3=C_KEY_BG; btn.BorderSizePixel=0; btn.Text=currentKey.Name; btn.TextColor3=C_ACCENT2
+	themeColor(btn,"BackgroundColor3","keyBg"); btn.BorderSizePixel=0; btn.Text=currentKey.Name; themeColor(btn,"TextColor3","accent2")
 	btn.Font=Enum.Font.GothamBold; btn.TextSize=10
 	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,5)
-	local bs=Instance.new("UIStroke",btn); bs.Color=C_BORDER; bs.Thickness=1
+	local bs=Instance.new("UIStroke",btn); themeColor(bs,"Color","border"); bs.Thickness=1
 	row.MouseEnter:Connect(function()
 		TweenService:Create(row,TweenInfo.new(0.1),{BackgroundColor3=C_ROW_HOV}):Play()
 		TweenService:Create(bar,TweenInfo.new(0.1),{BackgroundColor3=C_BORDER2}):Play()
@@ -620,25 +766,28 @@ local function makeKeybindRow(label, currentKey, onChanged)
 end
  
 local function makeToggleRow(label, defaultKey, defaultOn, onToggle, onKeyChanged)
-	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36); row.BackgroundColor3=C_ROW
+	local row=Instance.new("Frame",scroll); row.Size=UDim2.new(1,0,0,36)
+	themeColor(row,"BackgroundColor3","row")
 	row.BorderSizePixel=0; row.LayoutOrder=LO()
 	Instance.new("UICorner",row).CornerRadius=UDim.new(0,7)
-	Instance.new("UIStroke",row).Color=Color3.fromRGB(30,30,30)
+	local rowStroke=Instance.new("UIStroke",row); themeColor(rowStroke,"Color","border")
 	local bar=Instance.new("Frame",row); bar.Size=UDim2.new(0,2,0.6,0); bar.Position=UDim2.new(0,0,0.2,0)
-	bar.BackgroundColor3=defaultOn and C_BORDER2 or C_BORDER; bar.BorderSizePixel=0
+	bar.BorderSizePixel=0
+	if defaultOn then themeColor(bar,"BackgroundColor3","border2") else themeColor(bar,"BackgroundColor3","border") end
 	Instance.new("UICorner",bar).CornerRadius=UDim.new(1,0)
  
 	local lbl=Instance.new("TextLabel",row); lbl.Size=UDim2.new(0,118,1,0); lbl.Position=UDim2.new(0,14,0,0)
-	lbl.BackgroundTransparency=1; lbl.Text=label; lbl.TextColor3=C_ACCENT; lbl.Font=Enum.Font.GothamBold
+	lbl.BackgroundTransparency=1; lbl.Text=label; themeColor(lbl,"TextColor3","accent"); lbl.Font=Enum.Font.GothamBold
 	lbl.TextSize=11; lbl.TextXAlignment=Enum.TextXAlignment.Left
  
 	local keyBtn=nil
 	if defaultKey then
 		keyBtn=Instance.new("TextButton",row); keyBtn.Size=UDim2.new(0,58,0,22); keyBtn.Position=UDim2.new(1,-120,0.5,-11)
-		keyBtn.BackgroundColor3=C_KEY_BG; keyBtn.BorderSizePixel=0; keyBtn.Text=defaultKey.Name
-		keyBtn.TextColor3=C_ACCENT; keyBtn.Font=Enum.Font.GothamBold; keyBtn.TextSize=9; keyBtn.ZIndex=5
+		keyBtn.BorderSizePixel=0; keyBtn.Text=defaultKey.Name
+		themeColor(keyBtn,"BackgroundColor3","keyBg"); themeColor(keyBtn,"TextColor3","accent")
+		keyBtn.Font=Enum.Font.GothamBold; keyBtn.TextSize=9; keyBtn.ZIndex=5
 		Instance.new("UICorner",keyBtn).CornerRadius=UDim.new(0,4)
-		local ks=Instance.new("UIStroke",keyBtn); ks.Color=C_BORDER; ks.Thickness=1
+		local ks=Instance.new("UIStroke",keyBtn); themeColor(ks,"Color","border"); ks.Thickness=1
 		local kListening=false; local kConn
 		local function kStop(key)
 			kListening=false; if kConn then kConn:Disconnect(); kConn=nil end
@@ -660,13 +809,15 @@ local function makeToggleRow(label, defaultKey, defaultOn, onToggle, onKeyChange
  
 	local pillBg=Instance.new("Frame",row); pillBg.Size=UDim2.new(0,38,0,18)
 	pillBg.Position=UDim2.new(1,-44,0.5,-9)
-	pillBg.BackgroundColor3=defaultOn and C_ON_BG or C_OFF_BG; pillBg.BorderSizePixel=0; pillBg.ZIndex=5
+	pillBg.BorderSizePixel=0; pillBg.ZIndex=5
+	if defaultOn then themeColor(pillBg,"BackgroundColor3","onBg") else themeColor(pillBg,"BackgroundColor3","offBg") end
 	Instance.new("UICorner",pillBg).CornerRadius=UDim.new(1,0)
 	local pStroke=Instance.new("UIStroke",pillBg)
-	pStroke.Color=defaultOn and C_BORDER2 or C_BORDER; pStroke.Thickness=1
+	if defaultOn then themeColor(pStroke,"Color","border2") else themeColor(pStroke,"Color","border") end; pStroke.Thickness=1
 	local dot=Instance.new("Frame",pillBg); dot.Size=UDim2.new(0,12,0,12)
 	dot.Position=defaultOn and UDim2.new(1,-15,0.5,-6) or UDim2.new(0,3,0.5,-6)
-	dot.BackgroundColor3=defaultOn and C_WHITE or C_DIM; dot.BorderSizePixel=0; dot.ZIndex=6
+	dot.BorderSizePixel=0; dot.ZIndex=6
+	if defaultOn then themeColor(dot,"BackgroundColor3","white") else themeColor(dot,"BackgroundColor3","dim") end
 	Instance.new("UICorner",dot).CornerRadius=UDim.new(1,0)
  
 	local isOn=defaultOn or false
@@ -790,7 +941,7 @@ makeGap(8)
  
 local footerLbl=Instance.new("TextLabel",scroll)
 footerLbl.Size=UDim2.new(1,0,0,16); footerLbl.BackgroundTransparency=1; footerLbl.LayoutOrder=LO()
-footerLbl.Text="Npaz LHub  ·  v2.0"; footerLbl.TextColor3=C_DIM
+footerLbl.Text="Npaz LHub  ·  v2.0"; themeColor(footerLbl,"TextColor3","dim")
 footerLbl.Font=Enum.Font.GothamBold; footerLbl.TextSize=9; footerLbl.TextXAlignment=Enum.TextXAlignment.Center
  
 -- ============================================================
@@ -800,30 +951,30 @@ local mini=Instance.new("Frame",gui)
 mini.Name="NpazMini"
 mini.Size=UDim2.new(0,110,0,30)
 mini.Position=UDim2.new(0,20,0,20)
-mini.BackgroundColor3=Color3.fromRGB(8,8,8)
 mini.BorderSizePixel=0
 mini.ZIndex=20
+themeColor(mini,"BackgroundColor3","panel")
 mini.Visible=false
 Instance.new("UICorner",mini).CornerRadius=UDim.new(0,8)
 local miniStroke=Instance.new("UIStroke",mini)
-miniStroke.Color=Color3.fromRGB(220,220,220)
+themeColor(miniStroke,"Color","border2")
 miniStroke.Thickness=1.2
  
 local miniGem=Instance.new("Frame",mini)
 miniGem.Size=UDim2.new(0,18,0,18)
 miniGem.Position=UDim2.new(0,8,0.5,-9)
-miniGem.BackgroundColor3=Color3.fromRGB(40,40,40)
 miniGem.BorderSizePixel=0
 miniGem.ZIndex=22
+themeColor(miniGem,"BackgroundColor3","keyBg")
 Instance.new("UICorner",miniGem).CornerRadius=UDim.new(0,5)
 local miniGemStroke=Instance.new("UIStroke",miniGem)
-miniGemStroke.Color=Color3.fromRGB(180,180,180)
+themeColor(miniGemStroke,"Color","border")
 miniGemStroke.Thickness=1
 local miniGemLbl=Instance.new("TextLabel",miniGem)
 miniGemLbl.Size=UDim2.new(1,0,1,0)
 miniGemLbl.BackgroundTransparency=1
 miniGemLbl.Text="N"
-miniGemLbl.TextColor3=Color3.fromRGB(230,230,230)
+themeColor(miniGemLbl,"TextColor3","accent2")
 miniGemLbl.Font=Enum.Font.GothamBlack
 miniGemLbl.TextSize=10
 miniGemLbl.ZIndex=23
@@ -833,7 +984,7 @@ miniTxt.Size=UDim2.new(1,-36,1,0)
 miniTxt.Position=UDim2.new(0,32,0,0)
 miniTxt.BackgroundTransparency=1
 miniTxt.Text="Npaz LHub"
-miniTxt.TextColor3=Color3.fromRGB(210,210,210)
+themeColor(miniTxt,"TextColor3","accent2")
 miniTxt.Font=Enum.Font.GothamBold
 miniTxt.TextSize=11
 miniTxt.TextXAlignment=Enum.TextXAlignment.Left
@@ -849,10 +1000,10 @@ miniClick.MouseButton1Click:Connect(function()
 	main.Visible=true; shadow.Visible=true; mini.Visible=false
 end)
 miniClick.MouseEnter:Connect(function()
-	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=Color3.fromRGB(20,20,20)}):Play()
+	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=C_ROW_HOV}):Play()
 end)
 miniClick.MouseLeave:Connect(function()
-	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=Color3.fromRGB(8,8,8)}):Play()
+	TweenService:Create(mini,TweenInfo.new(0.1),{BackgroundColor3=C_PANEL}):Play()
 end)
 makeDraggable(mini)
  
@@ -861,25 +1012,28 @@ makeDraggable(mini)
 -- ============================================================
 local pbFrame=Instance.new("Frame",gui)
 pbFrame.Size=UDim2.new(0,340,0,48); pbFrame.Position=UDim2.new(0.5,-170,1,-68)
-pbFrame.BackgroundColor3=C_PANEL; pbFrame.BorderSizePixel=0; pbFrame.Active=true
+pbFrame.BorderSizePixel=0; pbFrame.Active=true
+themeColor(pbFrame,"BackgroundColor3","panel")
 Instance.new("UICorner",pbFrame).CornerRadius=UDim.new(0,8)
-Instance.new("UIStroke",pbFrame).Color=C_BORDER
+local pbFrameStroke = Instance.new("UIStroke",pbFrame); themeColor(pbFrameStroke,"Color","border")
 makeDraggable(pbFrame)
 local progressPct=Instance.new("TextLabel",pbFrame)
 progressPct.Size=UDim2.new(0,50,0,16); progressPct.Position=UDim2.new(0,10,0,6)
-progressPct.BackgroundTransparency=1; progressPct.Text="0%"; progressPct.TextColor3=C_ACCENT2
+progressPct.BackgroundTransparency=1; progressPct.Text="0%"; themeColor(progressPct,"TextColor3","accent2")
 progressPct.Font=Enum.Font.GothamBold; progressPct.TextSize=11; progressPct.TextXAlignment=Enum.TextXAlignment.Left
 local progressRadLbl=Instance.new("TextLabel",pbFrame)
 progressRadLbl.Size=UDim2.new(0,110,0,16); progressRadLbl.Position=UDim2.new(1,-116,0,6)
 progressRadLbl.BackgroundTransparency=1; progressRadLbl.Text="Radius: "..Steal.StealRadius
-progressRadLbl.TextColor3=C_ACCENT; progressRadLbl.Font=Enum.Font.GothamBold; progressRadLbl.TextSize=11
+themeColor(progressRadLbl,"TextColor3","accent"); progressRadLbl.Font=Enum.Font.GothamBold; progressRadLbl.TextSize=11
 progressRadLbl.TextXAlignment=Enum.TextXAlignment.Right
 local progressBg=Instance.new("Frame",pbFrame)
 progressBg.Size=UDim2.new(1,-20,0,8); progressBg.Position=UDim2.new(0,10,0,30)
-progressBg.BackgroundColor3=C_OFF_BG; progressBg.BorderSizePixel=0
+progressBg.BorderSizePixel=0
+themeColor(progressBg,"BackgroundColor3","offBg")
 Instance.new("UICorner",progressBg).CornerRadius=UDim.new(1,0)
 local progressFill=Instance.new("Frame",progressBg)
-progressFill.Size=UDim2.new(0,0,1,0); progressFill.BackgroundColor3=C_BORDER2; progressFill.BorderSizePixel=0
+progressFill.Size=UDim2.new(0,0,1,0); progressFill.BorderSizePixel=0
+themeColor(progressFill,"BackgroundColor3","border2")
 Instance.new("UICorner",progressFill).CornerRadius=UDim.new(1,0)
  
 -- ============================================================
@@ -887,20 +1041,22 @@ Instance.new("UICorner",progressFill).CornerRadius=UDim.new(1,0)
 -- ============================================================
 local radiusFrame=Instance.new("Frame",gui)
 radiusFrame.Size=UDim2.new(0,250,0,42); radiusFrame.Position=UDim2.new(0,20,0,630)
-radiusFrame.BackgroundColor3=C_PANEL; radiusFrame.BorderSizePixel=0; radiusFrame.Active=true
+radiusFrame.BorderSizePixel=0; radiusFrame.Active=true
+themeColor(radiusFrame,"BackgroundColor3","panel")
 Instance.new("UICorner",radiusFrame).CornerRadius=UDim.new(0,8)
-Instance.new("UIStroke",radiusFrame).Color=C_BORDER
+local radiusFrameStroke = Instance.new("UIStroke",radiusFrame); themeColor(radiusFrameStroke,"Color","border")
 makeDraggable(radiusFrame)
 local radLbl=Instance.new("TextLabel",radiusFrame)
 radLbl.Size=UDim2.new(0,130,1,0); radLbl.Position=UDim2.new(0,12,0,0)
 radLbl.Text="Grab Radius"; radLbl.Font=Enum.Font.GothamBold; radLbl.TextSize=11
-radLbl.TextColor3=C_ACCENT; radLbl.BackgroundTransparency=1; radLbl.TextXAlignment=Enum.TextXAlignment.Left
+radLbl.BackgroundTransparency=1; themeColor(radLbl,"TextColor3","accent"); radLbl.TextXAlignment=Enum.TextXAlignment.Left
 local radValBtn=Instance.new("TextButton",radiusFrame)
 radValBtn.Size=UDim2.new(0,66,0,26); radValBtn.Position=UDim2.new(1,-74,0.5,-13)
-radValBtn.BackgroundColor3=C_KEY_BG; radValBtn.BorderSizePixel=0; radValBtn.Text=tostring(Steal.StealRadius)
-radValBtn.TextColor3=C_ACCENT2; radValBtn.Font=Enum.Font.GothamBlack; radValBtn.TextSize=14
+radValBtn.BorderSizePixel=0; radValBtn.Text=tostring(Steal.StealRadius)
+themeColor(radValBtn,"BackgroundColor3","keyBg"); themeColor(radValBtn,"TextColor3","accent2")
+radValBtn.Font=Enum.Font.GothamBlack; radValBtn.TextSize=14
 Instance.new("UICorner",radValBtn).CornerRadius=UDim.new(0,5)
-Instance.new("UIStroke",radValBtn).Color=C_BORDER2
+local radValStroke = Instance.new("UIStroke",radValBtn); themeColor(radValStroke,"Color","border2")
 local typing2=false
 radValBtn.MouseButton1Click:Connect(function()
 	if typing2 then return end; typing2=true
@@ -1531,6 +1687,82 @@ local function setupChar(char)
 		speedLbl=Instance.new("TextLabel",bb); speedLbl.Size=UDim2.new(1,0,1,0)
 		speedLbl.BackgroundTransparency=1; speedLbl.TextColor3=C_ACCENT2
 		speedLbl.Font=Enum.Font.GothamBold; speedLbl.TextScaled=true; speedLbl.TextStrokeTransparency=0
+	end
+
+	-- jump neon effect (visual only) - raycast to ground and spawn a neon step
+	if Conns.jumpStep then Conns.jumpStep:Disconnect(); Conns.jumpStep=nil end
+	if Conns.jumpStepInput then Conns.jumpStepInput:Disconnect(); Conns.jumpStepInput=nil end
+	if h and hrp then
+		local lastStepTime = 0
+		local function spawnJumpStepAt(hitPos, hitNormal)
+			local now = tick()
+			if now - lastStepTime < 0.12 then return end
+			lastStepTime = now
+			local left = char:FindFirstChild("LeftFoot")
+			local right = char:FindFirstChild("RightFoot")
+			local color = (theme and theme.accent2) or C_ACCENT2 or Color3.fromRGB(235,185,255)
+			local function makeStepAt(pos, normal)
+				local p = Instance.new("Part", Workspace)
+				p.Name = "NpazJumpStep"
+				p.Anchored = true
+				p.CanCollide = false
+				p.Size = Vector3.new(1.6, 0.14, 1.6)
+				p.Material = Enum.Material.Neon
+				p.Color = color
+				p.CFrame = CFrame.new(pos + (normal or Vector3.new(0,1,0)) * 0.08)
+				p.CastShadow = false
+				p.Transparency = 0
+				Debris:AddItem(p, 0.65)
+				pcall(function()
+					TweenService:Create(p, TweenInfo.new(0.6, Enum.EasingStyle.Linear), {Transparency = 1, Size = Vector3.new(2.2, 0.14, 2.2)}):Play()
+				end)
+			end
+			if left and right then
+				-- spawn two small steps at each foot
+				local lpos = left.Position
+				local rpos = right.Position
+				-- raycast down from each foot to find exact ground normal/pos
+				local params = RaycastParams.new()
+				params.FilterDescendantsInstances = {char}
+				params.FilterType = Enum.RaycastFilterType.Blacklist
+				params.IgnoreWater = true
+				local lres = Workspace:Raycast(lpos, Vector3.new(0, -8, 0), params)
+				local rres = Workspace:Raycast(rpos, Vector3.new(0, -8, 0), params)
+				if lres then makeStepAt(lres.Position, lres.Normal) end
+				if rres then makeStepAt(rres.Position, rres.Normal) end
+				return
+			end
+			-- fallback: single step at hitPos
+			makeStepAt(hitPos, hitNormal)
+		end
+		Conns.jumpStep = h.Jumping:Connect(function(active)
+			if not active then return end
+			local origin = hrp.Position
+			local params = RaycastParams.new()
+			params.FilterDescendantsInstances = {char}
+			params.FilterType = Enum.RaycastFilterType.Blacklist
+			params.IgnoreWater = true
+			local result = Workspace:Raycast(origin, Vector3.new(0, -30, 0), params)
+			if not result then return end
+			local hitPos = result.Position
+			local distance = (origin - hitPos).Magnitude
+			if distance > 25 then return end
+			spawnJumpStepAt(hitPos, result.Normal)
+		end)
+		-- also spawn on local input jump request (more reliable client-side)
+		Conns.jumpStepInput = UIS.JumpRequest:Connect(function()
+			local origin = hrp.Position
+			local params = RaycastParams.new()
+			params.FilterDescendantsInstances = {char}
+			params.FilterType = Enum.RaycastFilterType.Blacklist
+			params.IgnoreWater = true
+			local result = Workspace:Raycast(origin, Vector3.new(0, -30, 0), params)
+			if not result then return end
+			local hitPos = result.Position
+			local distance = (origin - hitPos).Magnitude
+			if distance > 25 then return end
+			spawnJumpStepAt(hitPos, result.Normal)
+		end)
 	end
 	if State.antiRagdollEnabled and not Conns.antiRag then task.wait(0.5); startAntiRagdoll() end
 	if State.medusaCounterEnabled then setupMedusaCounter(char) end
