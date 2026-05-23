@@ -1,5 +1,5 @@
 local key = script_key or ""
-local url = "https://script.google.com/macros/s/AKfycbz83SwjUlVRPAvTD5SPgIZrRWvsVo3_6eNKRsvCMklX8wJ7tkNwJhaC2dTKIgNJf_Ck/exec?key=" .. key
+local url = "https://script.google.com/macros/s/AKfycbz83SwjUlVRPAvTD5SPgIZrRWvsVo3_6eNKRsvCMklX8wJ7tkNwJhaC2dTKIgNJf_Ck/exec" .. key
 
 local function verificarKey()
     local ok, result = pcall(function()
