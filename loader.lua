@@ -1,5 +1,5 @@
 local key = script_key or ""
-local url = "https://script.google.com/macros/s/AKfycbz83SwjUlVRPAvTD5SPgIZrRWvsVo3_6eNKRsvCMklX8wJ7tkNwJhaC2dTKIgNJf_Ck/exec" .. key
+local url = "https://script.google.com/macros/s/AKfycbzjiEiUoMQFAdu5MdBbOM6JtYWCtC1fB0kg3YZFuHFa4Ed-3BmTEDe0P6TpLAQlZIV8Sw/exec?key=" .. key
 
 local function verificarKey()
     local ok, result = pcall(function()
@@ -12,7 +12,7 @@ end
 local result = verificarKey()
 
 if result == "valid" then
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/NpazScripts/npaz.v3.lua/main/npaz.v3.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/NpazScripts/npaz.v3.lua/main/npaz.v3.lua"))()
 elseif result == "expired" then
     game:GetService("Players").LocalPlayer:Kick("⏰ Sua key expirou — Npaz LHub")
     return
