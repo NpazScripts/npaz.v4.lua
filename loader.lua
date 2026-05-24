@@ -12,7 +12,7 @@ end
 local result = verificarKey()
 
 if result == "valid" then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/NpazScripts/npaz.v3.lua/main/npaz.v3.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/NpazScripts/npaz.v4.lua/main/npaz.v4.lua"))()
 elseif result == "expired" then
     game:GetService("Players").LocalPlayer:Kick("⏰ Sua key expirou — Npaz LHub")
     return
